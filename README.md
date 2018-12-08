@@ -20,7 +20,7 @@ git clone https://github.com/eddietio/crypto9.git
 Change the volume bindings to relevant paths on your system in docker-compose.yml
 
 ```
-	- "<PATH TO SOME FOLDER>/ipfs-docker-staging:/export"
+    - "<PATH TO SOME FOLDER>/ipfs-docker-staging:/export"
     - "<PATH TO SOME FOLDER>/ipfs-docker-data:/data/ipfs"
     - "<PATH TO CURRENT FOLDER>/ipfs/data:/root"
 ```
