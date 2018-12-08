@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+  ipfs:
+    container_name: ipfs-node
+    image: jbenet/go-ipfs:latest
+    ports:    
+      - "8080:8080"
+      - "4001:4001"
+      - "5001:5001"
+    volumes:
+      - "/tmp/ipfs-docker-staging:/export"
+      - "/tmp/ipfs-docker-data:/data/ipfs"
+      - "~/Projects/ipfs/data:/root"
+
+volumes:
+  ipfs:

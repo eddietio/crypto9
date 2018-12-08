@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="icon" href="../../../../favicon.ico">-->
+
+    <title>ETHSG</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="css/navbar-top-fixed.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+<style>
+    .input-field {
+        padding-bottom: 8px
+    }
+
+    .input-label {
+        font-size: 10pt;
+    }
+</style>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="#">ETHSG - CRYPTO9</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">Simple Swap <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="advtrading.html">Advanced Trading</a>
+            </li>
+            <!--<li class="nav-item">-->
+                <!--<a class="nav-link" href="set.html">SET Protocol</a>-->
+            <!--</li>-->
+        </ul>
+        <!--<form class="form-inline mt-2 mt-md-0">-->
+        <!--<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">-->
+        <!--<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>-->
+        <!--</form>-->
+        <form class="form-inline mt-2 mt-md-0">
+            <button type="button" class="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#exampleModal" id="showSeedPhrase">
+                Seed Phrase
+            </button>
+        </form>
+    </div>
+</nav>
+
+<main role="main" class="container">
+    <div id="alerts"></div>
+    <div class="jumbotron" style="position:relative">
+        <h1>Advanced Trading</h1>
+        <p class="lead">Automate your orders</p>
+        <div style="width:50px;height:50px;position:absolute;right:0;top:0;margin:20px" id="loaderPlaceholder"></div>
+        <div class="container">
+            <form>
+                <div class="row" style="margin-bottom:20px;">
+                    <div class="col col-sm">
+                        <table id="myTable" class="display" width="100%" ></table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 col-sm-3 input-label">
+                        <label for="convRate">Reference Rate</label>
+                    </div>
+                    <div class="col-8 col-sm-9 input-field">
+                        <div class="input-group">
+                            <input id="convRate" name="convRate" type="text" class="form-control" aria-label="reference-rate" aria-describedby="button-fetchrate" style="border-radius:0;">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="button-fetchrate" style="border:1px solid #0b6623;background-color:#0b6623;color:white;border-radius:0;">Refresh</button>
+                            </div>
+                        </div>
+                        <!--<input type="text" id="convRate" name="convRate" placeholder="0"-->
+                               <!--style="width:100%;display:block">-->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 col-sm-3 input-label">
+                        <label for="orderType">Order Type</label>
+                    </div>
+                    <div class="col-8 col-sm-9 input-field">
+                        <select id="orderType" style="width:100%;display:block" name="orderType" class="form-control">
+                            <option value="Normal">Normal</option>
+                            <option value="Stop">Stop</option>
+                            <!--<option value="Trailing Stop">Trailing Stop</option>-->
+                            <option value="Limit">Limit</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 col-sm-3 input-label">
+                        <label for="srcToken">Source Token</label>
+                    </div>
+                    <div class="col-8 col-sm-9 input-field">
+                        <select id="srcToken" style="width:100%;display:block" name="srcToken" class="form-control">
+                            <option value="ETH">ETH</option>
+                            <option value="ADX">ADX</option>
+                            <option value="APPC">APPC</option>
+                            <option value="AST">AST</option>
+                            <option value="BAT">BAT</option>
+                            <option value="BBO">BBO</option>
+                            <option value="BITX">BITX</option>
+                            <option value="BQX">BQX</option>
+                            <option value="COFI">COFI</option>
+                            <option value="DAI">DAI</option>
+                            <option value="ELF">ELF</option>
+                            <option value="ENG">ENG</option>
+                            <option value="GTO">GTO</option>
+                            <option value="IOST">IOST</option>
+                            <option value="KNC">KNC</option>
+                            <option value="LINK">LINK</option>
+                            <option selected value="MANA">MANA</option>
+                            <option value="MOC">MOC</option>
+                            <option value="OMG">OMG</option>
+                            <option value="POWR">POWR</option>
+                            <option value="RCN">RCN</option>
+                            <option value="RDN">RDN</option>
+                            <option value="REQ">REQ</option>
+                            <option value="SALT">SALT</option>
+                            <option value="SNT">SNT</option>
+                            <option value="STORM">STORM</option>
+                            <option value="ZIL">ZIL</option>
+                        </select>
+                    </div>
+                </div>
+                <!--<div class="row">-->
+                    <!--<div class="col-4 col-sm-3 input-label">-->
+                        <!--<label for="srcAddress">Source Address</label>-->
+                    <!--</div>-->
+                    <!--<div class="col-8 col-sm-9 input-field">-->
+                        <!--<input type="text" name="srcAddress" placeholder="0x" style="width:100%;display:block">-->
+                    <!--</div>-->
+                <!--</div>-->
+                <div class="row">
+                    <div class="col-4 col-sm-3 input-label">
+                        <label for="srcQty">Source Token Qty</label>
+                    </div>
+                    <div class="col-8 col-sm-9 input-field">
+                        <input type="text" id="srcQty" name="srcQty" placeholder="0" style="width:100%;display:block" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 col-sm-3 input-label">
+                        <label for="destToken">Dest Token</label>
+                    </div>
+                    <div class="col-8 col-sm-9 input-field">
+                        <select id="destToken" style="width:100%;display:block" name="destToken" class="form-control">
+                            <option value="ETH">ETH</option>
+                            <option value="ADX">ADX</option>
+                            <option value="APPC">APPC</option>
+                            <option value="AST">AST</option>
+                            <option value="BAT">BAT</option>
+                            <option value="BBO">BBO</option>
+                            <option value="BITX">BITX</option>
+                            <option value="BQX">BQX</option>
+                            <option value="COFI">COFI</option>
+                            <option value="DAI">DAI</option>
+                            <option value="ELF">ELF</option>
+                            <option value="ENG">ENG</option>
+                            <option value="GTO">GTO</option>
+                            <option value="IOST">IOST</option>
+                            <option selected value="KNC">KNC</option>
+                            <option value="LINK">LINK</option>
+                            <option value="MANA">MANA</option>
+                            <option value="MOC">MOC</option>
+                            <option value="OMG">OMG</option>
+                            <option value="POWR">POWR</option>
+                            <option value="RCN">RCN</option>
+                            <option value="RDN">RDN</option>
+                            <option value="REQ">REQ</option>
+                            <option value="SALT">SALT</option>
+                            <option value="SNT">SNT</option>
+                            <option value="STORM">STORM</option>
+                            <option value="ZIL">ZIL</option>
+                        </select>
+                    </div>
+                </div>
+                <!--<div class="row">-->
+                    <!--<div class="col-4 col-sm-3 input-label">-->
+                        <!--<label for="destToken">Dest Address</label>-->
+                    <!--</div>-->
+                    <!--<div class="col-8 col-sm-9 input-field">-->
+                        <!--<input type="text" name="destToken" placeholder="0x" style="width:100%;display:block">-->
+                    <!--</div>-->
+                <!--</div>-->
+                <div class="row">
+                    <div class="col-4 col-sm-3 input-label">
+                        <label for="destQty">Dest Token Qty</label>
+                    </div>
+                    <div class="col-8 col-sm-9 input-field">
+                        <input type="text" id="destQty" name="destQty" placeholder="0" style="width:100%;display:block" class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 col-sm-3 input-label">
+                        <label for="destQty">Expiry Time</label>
+                    </div>
+                    <div class="col-8 col-sm-9 input-field">
+                        <input type="text" id="expiryDateTime" name="expiryDateTime" placeholder="0" style="width:100%;display:block" class="form-control">
+                    </div>
+                </div>
+            </form>
+            <div class="row">
+                <div class="col-4 col-sm-3 input-label">
+                    <label for="addOrder"></label>
+                </div>
+                <div class="col-8 col-sm-9" style="text-align:right">
+                    <button type="submit" id="addOrder" name="addOrder" class="btn btn-md btn-primary"
+                            role="button">Add Order&raquo;</>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Seed Phrase</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea value="" id="mnemonic" class="form-control" style="display:inline-block;width:100%;height:100%" rows="4" cols="50">gesture rather obey video awake genuine patient base soon parrot upset lounge</textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="saveMnemonic" type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+<script>window.jQuery || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"><\/script>')</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+<script src="js/bundle.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<script>
+    var mnemonic = "gesture rather obey video awake genuine patient base soon parrot upset lounge";
+    //TODO: change to isMnemonicEmpty to true if default seed phrase is removed
+    var isMnemonicEmpty=false;
+    const rpcUrl = 'https://ropsten.infura.io/v3/b8a2f3da69ed42e49780464311838538';
+    var supportedTokens = ["KNC","MANA","BAT","OMG"];
+    var taddr = {
+        "ETH": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+        "ADX": "0x499990DB50b34687CDaFb2C8DaBaE4E99d6F38A7",
+        "APPC": "0x2799f05B55d56be756Ca01Af40Bf7350787F48d4",
+        "AST": "0xeF06F410C26a0fF87b3a43927459Cce99268a2eF",
+        "BAT": "0xDb0040451F373949A4Be60dcd7b6B8D6E42658B6",
+        "BBO": "0xa94758d328af7ef1815e73053e95b5F86588C16D",
+        "BITX": "0x7a17267576318efb728bc4a0833e489a46ba138f",
+        "BQX": "0x9504A86A881F63Da06302FB3639d4582022097DB",
+        "COFI": "0xb91786188f8d4e35d6d67799e9f162587bf4da03",
+        "DAI": "0xaD6D458402F60fD3Bd25163575031ACDce07538D",
+        "ELF": "0x9Fcc27c7320703c43368cf1A4bf076402cd0D6B4",
+        "ENG": "0x95cc8d8f29D0f7fcC425E8708893E759d1599c97",
+        "GTO": "0xe55c607d58c53b2B06A8E38f67F4c0FcAeEd2c31",
+        "IOST": "0x27db28a6C4ac3D82a08D490cfb746E6F02bC467C",
+        "KNC": "0x4E470dc7321E84CA96FcAEDD0C8aBCebbAEB68C6",
+        "LINK": "0xb4f7332ed719Eb4839f091EDDB2A3bA309739521",
+        "MANA": "0x72fd6C7C1397040A66F33C2ecC83A0F71Ee46D5c",
+        "MOC": "0x1742c81075031b8f173d2327e3479d1fc3feaa76",
+        "OMG": "0x4BFBa4a8F28755Cb2061c413459EE562c6B9c51b",
+        "POWR": "0xa577731515303F0C0D00E236041855A5C4F114dC",
+        "RCN": "0x99338aa9218C6C23AA9d8cc2f3EFaf29954ea26B",
+        "RDN": "0x5422Ef695ED0B1213e2B953CFA877029637D9D26",
+        "REQ": "0xb43D10BbE7222519Da899B72bF2c7f094b6F79D7",
+        "SALT": "0xB47f1A9B121BA114d5e98722a8948e274d0F4042",
+        "SNT": "0xbF5d8683b9BE6C43fcA607eb2a6f2626A18837a6",
+        "STORM": "0x8FFf7De21de8ad9c510704407337542073FDC44b",
+        "ZIL": "0xaD78AFbbE48bA7B670fbC54c65708cbc17450167"
+    };
+
+    setupTrade(mnemonic, rpcUrl, "Ropsten");
+
+    window.addEventListener('load', async () => {
+        // Modern dapp browsers...
+        if (window.ethereum) {
+        window.web3 = new Web3(ethereum);
+        try {
+            // Request account access if needed
+            await ethereum.enable();
+            // Acccounts now exposed
+            //web3.eth.sendTransaction({/* ... */});
+        } catch (error) {
+            // User denied account access...
+        }
+    }
+    // Legacy dapp browsers...
+    else if (window.web3) {
+        window.web3 = new Web3(web3.currentProvider);
+        // Acccounts always exposed
+        //web3.eth.sendTransaction({/* ... */});
+    }
+    // Non-dapp browsers...
+    else {
+        console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+    }
+    });
+    var senderReceiver = "";
+    web3.eth.getAccounts(function(error, accounts) {
+        console.log(accounts[0]);
+        senderReceiver = accounts[0];
+    });
+    console.log(web3.version.api);
+    //
+    var KyberContract = web3.eth.contract([{"constant":false,"inputs":[{"name":"alerter","type":"address"}],"name":"removeAlerter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"enabled","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"pendingAdmin","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"getOperators","outputs":[{"name":"","type":"address[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"srcAmount","type":"uint256"},{"name":"dest","type":"address"},{"name":"destAddress","type":"address"},{"name":"maxDestAmount","type":"uint256"},{"name":"minConversionRate","type":"uint256"},{"name":"walletId","type":"address"},{"name":"hint","type":"bytes"}],"name":"tradeWithHint","outputs":[{"name":"","type":"uint256"}],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"name":"token","type":"address"},{"name":"srcAmount","type":"uint256"},{"name":"minConversionRate","type":"uint256"}],"name":"swapTokenToEther","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"token","type":"address"},{"name":"amount","type":"uint256"},{"name":"sendTo","type":"address"}],"name":"withdrawToken","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"maxGasPrice","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"newAlerter","type":"address"}],"name":"addAlerter","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"kyberNetworkContract","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"user","type":"address"}],"name":"getUserCapInWei","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"srcAmount","type":"uint256"},{"name":"dest","type":"address"},{"name":"minConversionRate","type":"uint256"}],"name":"swapTokenToToken","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"newAdmin","type":"address"}],"name":"transferAdmin","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"claimAdmin","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"token","type":"address"},{"name":"minConversionRate","type":"uint256"}],"name":"swapEtherToToken","outputs":[{"name":"","type":"uint256"}],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"name":"newAdmin","type":"address"}],"name":"transferAdminQuickly","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"getAlerters","outputs":[{"name":"","type":"address[]"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"src","type":"address"},{"name":"dest","type":"address"},{"name":"srcQty","type":"uint256"}],"name":"getExpectedRate","outputs":[{"name":"expectedRate","type":"uint256"},{"name":"slippageRate","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"user","type":"address"},{"name":"token","type":"address"}],"name":"getUserCapInTokenWei","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"newOperator","type":"address"}],"name":"addOperator","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_kyberNetworkContract","type":"address"}],"name":"setKyberNetworkContract","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"operator","type":"address"}],"name":"removeOperator","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"field","type":"bytes32"}],"name":"info","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"src","type":"address"},{"name":"srcAmount","type":"uint256"},{"name":"dest","type":"address"},{"name":"destAddress","type":"address"},{"name":"maxDestAmount","type":"uint256"},{"name":"minConversionRate","type":"uint256"},{"name":"walletId","type":"address"}],"name":"trade","outputs":[{"name":"","type":"uint256"}],"payable":true,"stateMutability":"payable","type":"function"},{"constant":false,"inputs":[{"name":"amount","type":"uint256"},{"name":"sendTo","type":"address"}],"name":"withdrawEther","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"token","type":"address"},{"name":"user","type":"address"}],"name":"getBalance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"admin","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"inputs":[{"name":"_admin","type":"address"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"trader","type":"address"},{"indexed":false,"name":"src","type":"address"},{"indexed":false,"name":"dest","type":"address"},{"indexed":false,"name":"actualSrcAmount","type":"uint256"},{"indexed":false,"name":"actualDestAmount","type":"uint256"}],"name":"ExecuteTrade","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"newNetworkContract","type":"address"},{"indexed":false,"name":"oldNetworkContract","type":"address"}],"name":"KyberNetworkSet","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"token","type":"address"},{"indexed":false,"name":"amount","type":"uint256"},{"indexed":false,"name":"sendTo","type":"address"}],"name":"TokenWithdraw","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"amount","type":"uint256"},{"indexed":false,"name":"sendTo","type":"address"}],"name":"EtherWithdraw","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"pendingAdmin","type":"address"}],"name":"TransferAdminPending","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"newAdmin","type":"address"},{"indexed":false,"name":"previousAdmin","type":"address"}],"name":"AdminClaimed","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"newAlerter","type":"address"},{"indexed":false,"name":"isAdd","type":"bool"}],"name":"AlerterAdded","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"newOperator","type":"address"},{"indexed":false,"name":"isAdd","type":"bool"}],"name":"OperatorAdded","type":"event"}]);
+    var KNCABI = [{"constant":true,"inputs":[],"name":"mintingFinished","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"mint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_value","type":"uint256"}],"name":"burn","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_subtractedValue","type":"uint256"}],"name":"decreaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_value","type":"uint256"}],"name":"burnFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"finishMinting","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_addedValue","type":"uint256"}],"name":"increaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Mint","type":"event"},{"anonymous":false,"inputs":[],"name":"MintFinished","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"}],"name":"OwnershipRenounced","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"burner","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Burn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}]
+    var OMGABI = [{"constant":true,"inputs":[],"name":"mintingFinished","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"mint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_value","type":"uint256"}],"name":"burn","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_subtractedValue","type":"uint256"}],"name":"decreaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_value","type":"uint256"}],"name":"burnFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[],"name":"finishMinting","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_addedValue","type":"uint256"}],"name":"increaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Mint","type":"event"},{"anonymous":false,"inputs":[],"name":"MintFinished","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"}],"name":"OwnershipRenounced","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"burner","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Burn","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}]
+    var MANAABI = [{"constant":true,"inputs":[],"name":"mintingFinished","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x05d2035b"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x06fdde03"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0x095ea7b3"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x18160ddd"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0x23b872dd"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x313ce567"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"mint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0x40c10f19"},{"constant":false,"inputs":[{"name":"_value","type":"uint256"}],"name":"burn","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0x42966c68"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_subtractedValue","type":"uint256"}],"name":"decreaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0x66188463"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x70a08231"},{"constant":false,"inputs":[],"name":"renounceOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0x715018a6"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_value","type":"uint256"}],"name":"burnFrom","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0x79cc6790"},{"constant":false,"inputs":[],"name":"finishMinting","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0x7d64bcb4"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x8da5cb5b"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function","signature":"0x95d89b41"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0xa9059cbb"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_addedValue","type":"uint256"}],"name":"increaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0xd73dd623"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function","signature":"0xdd62ed3e"},{"constant":false,"inputs":[{"name":"_newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function","signature":"0xf2fde38b"},{"inputs":[],"payable":false,"stateMutability":"nonpayable","type":"constructor","signature":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Mint","type":"event","signature":"0x0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885"},{"anonymous":false,"inputs":[],"name":"MintFinished","type":"event","signature":"0xae5184fba832cb2b1f702aca6117b8d265eaf03ad33eb133f19dde0f5920fa08"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"}],"name":"OwnershipRenounced","type":"event","signature":"0xf8df31144d9c2f0f6b59d69b8b98abd5459d07f2742c4df920b25aae33c64820"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event","signature":"0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0"},{"anonymous":false,"inputs":[{"indexed":true,"name":"burner","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Burn","type":"event","signature":"0xcc16f5dbb4873280815c1ee09dbd06736cffcc184412cf7a71a0fdb75d397ca5"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event","signature":"0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event","signature":"0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"}]
+
+
+    var Kyber = KyberContract.at('0x818E6FECD516Ecc3849DAf6845e3EC868087B755');
+
+    $(function () {
+
+        function addAlert(message,type) {
+            $('#alerts').append(
+                    '<div class="alert ' + type +' alert-dismissible fade show" role="alert">' + message + ' <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span> </button> </div>');
+        }
+
+        $('input[name="expiryDateTime"]').daterangepicker({
+            singleDatePicker: true,
+            timePicker: true,
+            showDropdowns: true,
+            minDate: 0,
+            locale: {
+                format: 'MM/DD/YYYY hh:mm:ss'
+            }
+            //maxYear: parseInt(moment().format('YYYY'),10)
+        }, function(start, end, label) {
+            //var years = moment().diff(start, 'years');
+//            alert("You are " + years + " years old!");
+        });
+
+        $('input[name="expiryDateTime"]').on('apply.daterangepicker', function(ev, picker) {
+            $("#expiryDateTime").val(picker.startDate.format('MM/DD/YYYY hh:mm:ss'));
+        });
+
+        var srcToken = $("#srcToken").find('option:selected').text();
+        var destToken = $("#destToken").find('option:selected').text();
+        getRates(srcToken,destToken);
+//        $.getJSON("https://tracker.kyber.network/api/tokens/pairs", function (data) {
+//                var items = [];
+//                $.each( data, function( key, val ) {
+//                    //console.log("key: " + key);
+//                    //console.log("val: " + val);
+//                });
+//            console.log(data[srcToken + '_' + destToken].currentPrice);
+//            $("#convRate").val(data[srcToken + '_' + destToken].currentPrice);
+//        });
+
+        $("#srcToken").change(function () {
+            $("#convRate").val("Loading price from API...");
+            var srcToken = $("#srcToken").find('option:selected').text();
+            var destToken = $("#destToken").find('option:selected').text();
+            getRates(srcToken,destToken);
+//            $.getJSON("https://tracker.kyber.network/api/tokens/pairs", function (data) {
+//                console.log(data[srcToken + '_' + destToken].currentPrice);
+//                $("#convRate").val(data[srcToken + '_' + destToken].currentPrice);
+//            });
+        });
+
+        $("#destToken").change(function () {
+            $("#convRate").val("Loading price from API...");
+            var srcToken = $("#srcToken").find('option:selected').text();
+            var destToken = $("#destToken").find('option:selected').text();
+            getRates(srcToken,destToken);
+//            $.getJSON("https://tracker.kyber.network/api/tokens/pairs", function (data) {
+//                console.log(data[srcToken + '_' + destToken].currentPrice);
+//                $("#convRate").val(data[srcToken + '_' + destToken].currentPrice);
+//            });
+        });
+
+        $('#srcQty').change(function(){
+            $("#destQty").val($("#srcQty").val() * $("#convRate").val() );
+        })
+
+        var orderId = 2;
+        var orders = [
+            [ 1, "ETH", "1","KNC", "368","Normal", "368","12/09/2018 12:00:00",'Expired'],
+                ];
+        var orderCol = {
+            "id":0,
+            "srcToken":1,
+            "srcQty":2,
+            "destToken":3,
+            "destQty":4,
+            "type":5,
+            "rate":6,
+            "expiry":7,
+            "status":8
+        }
+
+
+        var table1 = $('#myTable').DataTable({
+                    data: orders,
+                    columns: [
+                        {title: "#"},
+                        {title: "Src"},
+                        {title: "Src. Qty"},
+                        {title: "Dest"},
+                        {title: "Dest. Qty"},
+                        {title: "Type"},
+                        {title: "Rate"},
+                        {title: "Expiry"},
+                        {title: "Status"}
+                    ],
+                    responsive: true
+                }
+        );
+
+        Array.prototype.contains = function(obj) {
+            var i = this.length;
+            while (i--) {
+                if (this[i] == obj) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function getRates(srcToken, destToken) {
+            return new Promise(function(resolve, reject) {
+                Kyber.getExpectedRate(taddr[srcToken], taddr[destToken], "1", function (error, result) {
+                    if (!error) {
+                        //console.log(result);
+                        $("#convRate").val(web3.fromWei(result[0] * 1, 'ether'));
+                        resolve(web3.fromWei(result[0] * 1, 'ether'));
+                        //resolve(result[0]);
+                    }
+                    else {
+                        console.error(error);
+                    }
+                });
+            });
+        }
+
+        $("#button-fetchrate").click(function(){
+            $("#convRate").val("Loading price from API...");
+            var srcToken = $("#srcToken").find('option:selected').text();
+            var destToken = $("#destToken").find('option:selected').text();
+            getRates(srcToken,destToken);
+//            $.getJSON("https://tracker.kyber.network/api/tokens/pairs", function (data) {
+//                console.log(data[srcToken + '_' + destToken].currentPrice);
+//                $("#convRate").val(data[srcToken + '_' + destToken].currentPrice);
+//            });
+        });
+
+        $('#myTable tbody').on('click', 'tr', function () {
+            var data = table1.row( this ).data();
+            console.log(data[0]);
+            if(orders[data[0]-1][orderCol["status"]]=="Pending"){
+                orders[data[0]-1][orderCol["status"]]="Cancelled";
+                $('#myTable').dataTable().fnClearTable();
+                $('#myTable').dataTable().fnAddData(orders);
+                console.log("Order cancelled.");
+            }
+        } );
+
+        $("#addOrder").click(function () {
+            window.scrollTo(0, 0);
+            var srcToken = $("#srcToken").find('option:selected').text();
+            var destToken = $("#destToken").find('option:selected').text();
+            var srcQty = $("#srcQty").val();
+            var destQty = $("#destQty").val();
+            var rate = $("#convRate").val();
+            var orderType= $("#orderType").find('option:selected').text();
+            var expiryDateTime= $("#expiryDateTime").val();
+
+            if(srcQty>0 && destQty>0){
+                orders.push([orderId,srcToken,srcQty,destToken,destQty,orderType,rate,expiryDateTime,"Pending"])
+                $('#myTable').dataTable().fnClearTable();
+                $('#myTable').dataTable().fnAddData(orders);
+                orderId++;
+                addAlert("Order queued successfully!","alert-success");
+            }else{
+                addAlert("Unable to queue order, please check order details!","alert-warning");
+            }
+
+            getRates(srcToken,destToken).then(function(value){
+               console.log(value);
+            });
+        });
+
+        $("#alert").fadeTo(2000, 500).slideUp(500, function(){
+            $("#alert").slideUp(500);
+        });
+
+        $("#showSeedPhrase").click(function(){
+            mnemonic = $("#mnemonic").val();
+            if(mnemonic.length>0){
+                isMnemonicEmpty=false;
+            }else{
+                isMnemonicEmpty=true;
+            }
+            setupTrade(mnemonic, rpcUrl, "Ropsten");
+        });
+
+        $("#closeMnemonic").click(function(){
+        });
+
+        $("#saveMnemonic").click(function(){
+            mnemonic = $("#mnemonic").val();
+            if(mnemonic.length>0){
+                isMnemonicEmpty=false;
+            }else{
+                isMnemonicEmpty=true;
+            }
+            setupTrade(mnemonic, rpcUrl, "Ropsten");
+
+        });
+
+        // set interval
+        var tid = setInterval(mycode, 15000);
+        var intervalOverride=0;
+        var cSrcToken, cDestToken;
+        function abortTimer() { // to be called when you want to stop the timer
+            clearInterval(tid);
+        }
+
+        function sendOrder(srcToken,destToken,srcQty){
+            result = Kyber.getExpectedRate(taddr[srcToken], taddr["ETH"], "1", function (error, result) {
+                if(supportedTokens.contains(srcToken) && supportedTokens.contains(destToken)){
+                    console.log(srcToken + "," + destToken + "," + srcQty);
+                    main(srcToken, destToken, srcQty);
+                }else{
+                    console.log("HD Wallet only supports KNC, MANA, BAT & OMG currently");
+                }
+            })
+        }
+
+        function mycode() {
+            // do some stuff...
+            // no need to recall the function (it's an interval, it'll loop forever)
+            intervalOverride++;
+            $("#loaderPlaceholder").addClass("loader");
+            console.log("running");
+            var now, orderExpiryDate1;
+
+            for (var i = 0; i < orders.length; i++) {
+                if(orders[i][orderCol["status"]]=="Pending"){
+                    console.log("order " + i);
+                    cSrcToken=orders[i][orderCol["srcToken"]];
+                    cDestToken=orders[i][orderCol["destToken"]];
+                    orderExpiryDate1 = new Date(orders[i][orderCol["expiry"]]).getTime();
+                    console.log(orders[i][orderCol["expiry"]] + " " + orderExpiryDate1);
+                    now = Date.now();
+                    console.log( orderExpiryDate1 + " vs " + now);
+                    if(orderExpiryDate1 < now){
+                        orders[i][orderCol["status"]]="Expired";
+                        $('#myTable').dataTable().fnClearTable();
+                        $('#myTable').dataTable().fnAddData(orders);
+                        console.log("Order expired.");
+                        continue;
+                    }
+                    var activeOrder = orders[i];
+                    marketPrice=getRates(srcToken,destToken).then(function(value){
+                        console.log(i);
+                        console.log("checking order id: " + activeOrder[orderCol["id"]] +", "+cSrcToken+", "+cDestToken+", against market price of " + value);
+                        if(activeOrder[orderCol["type"]]=="Normal") {
+                            console.log("This is a normal order");
+                            console.log("Sending order id: " + activeOrder[orderCol["id"]]);
+                            activeOrder[orderCol["destQty"]]=value;
+                            sendOrder(activeOrder[orderCol["srcToken"]],activeOrder[orderCol["destToken"]],value);
+                            activeOrder[orderCol["status"]]="Sent";
+                            $('#myTable').dataTable().fnClearTable();
+                            $('#myTable').dataTable().fnAddData(orders);
+                        }else if(activeOrder[orderCol["type"]]=="Limit"){
+                            console.log("This is a limit order");
+                            console.log("Rate/market: " + activeOrder[orderCol["rate"]] + "/" + value);
+                            if(activeOrder[orderCol["rate"]]<=value){
+                                console.log("Sending order id: " + activeOrder[orderCol["id"]]);
+                                activeOrder[orderCol["destQty"]]=value;
+                                sendOrder(activeOrder[orderCol["srcToken"]],activeOrder[orderCol["destToken"]],value);
+                                activeOrder[orderCol["status"]]="Sent";
+                                $('#myTable').dataTable().fnClearTable();
+                                $('#myTable').dataTable().fnAddData(orders);
+                            }
+                        }else if(activeOrder [orderCol["type"]]=="Stop"){
+                            console.log("This is a stop order, ");
+                            console.log("Rate/market: " + activeOrder[orderCol["rate"]] + "/" + value);
+                            if(activeOrder[orderCol["rate"]]>=value){
+                                console.log("Sending order id: " + activeOrder[orderCol["id"]]);
+                                activeOrder[orderCol["destQty"]]=value;
+                                sendOrder(activeOrder[orderCol["srcToken"]],activeOrder[orderCol["destToken"]],value);
+                                activeOrder[orderCol["status"]]="Sent";
+                                $('#myTable').dataTable().fnClearTable();
+                                $('#myTable').dataTable().fnAddData(orders);
+                            }
+                        }
+//                        else if(activeOrder [orderCol["type"]]=="Trailing Stop"){
+//                            console.log("This is a trailing stop order");
+//                        }
+                    });
+                }
+                //Do something
+            }
+
+            setTimeout(
+                    function()
+                    {
+                        $("#loaderPlaceholder").removeClass("loader");
+                    }, 1000);
+//            if(intervalOverride>1){
+//                console.log("aborting timer");
+//                abortTimer()
+//            }
+        }
+
+    });
+</script>
+</body>
+</html>
