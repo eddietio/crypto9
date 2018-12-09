@@ -588,7 +588,7 @@
                         if(activeOrder[orderCol["type"]]=="Normal") {
                             console.log("This is a normal order");
                             console.log("Sending order id: " + activeOrder[orderCol["id"]]);
-                            activeOrder[orderCol["destQty"]]=value;
+                            activeOrder[orderCol["destQty"]]=value*activeOrder[orderCol["srcQty"]];
                             sendOrder(activeOrder[orderCol["srcToken"]],activeOrder[orderCol["destToken"]],value);
                             activeOrder[orderCol["status"]]="Sent";
                             $('#myTable').dataTable().fnClearTable();
@@ -598,7 +598,7 @@
                             console.log("Rate/market: " + activeOrder[orderCol["rate"]] + "/" + value);
                             if(activeOrder[orderCol["rate"]]<=value){
                                 console.log("Sending order id: " + activeOrder[orderCol["id"]]);
-                                activeOrder[orderCol["destQty"]]=value;
+                                activeOrder[orderCol["destQty"]]=value*activeOrder[orderCol["srcQty"]];
                                 sendOrder(activeOrder[orderCol["srcToken"]],activeOrder[orderCol["destToken"]],value);
                                 activeOrder[orderCol["status"]]="Sent";
                                 $('#myTable').dataTable().fnClearTable();
@@ -609,7 +609,7 @@
                             console.log("Rate/market: " + activeOrder[orderCol["rate"]] + "/" + value);
                             if(activeOrder[orderCol["rate"]]>=value){
                                 console.log("Sending order id: " + activeOrder[orderCol["id"]]);
-                                activeOrder[orderCol["destQty"]]=value;
+                                activeOrder[orderCol["destQty"]]=value*activeOrder[orderCol["srcQty"]];
                                 sendOrder(activeOrder[orderCol["srcToken"]],activeOrder[orderCol["destToken"]],value);
                                 activeOrder[orderCol["status"]]="Sent";
                                 $('#myTable').dataTable().fnClearTable();
