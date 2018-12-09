@@ -58,6 +58,9 @@
         <form class="form-inline mt-2 mt-md-0">
             <button type="button" class="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#exampleModal" id="showSeedPhrase">
                 Seed Phrase
+            </button>&nbsp;
+            <button type="button" class="btn btn-outline-warning my-2 my-sm-0" data-toggle="modal" data-target="#rainyDayModal" id="rainyDay">
+                Rainy Day
             </button>
         </form>
     </div>
@@ -205,7 +208,7 @@
 </main>
 
 
-<!-- Modal -->
+<!-- Seed Phrase Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -221,6 +224,26 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button id="saveMnemonic" type="button" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MakerDao Modal -->
+<div class="modal fade" id="rainyDayModal" tabindex="-1" role="dialog" aria-labelledby="rainyDayModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rainyDayModalLabel">Rainy Day</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <textarea value="" id="rainyDayBalance" class="form-control" style="display:inline-block;width:100%;height:100%" rows="4" cols="50"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button id="convertToDai" type="button" class="btn btn-primary" data-dismiss="modal">Convert to DAI</button>
             </div>
         </div>
     </div>
@@ -435,6 +458,12 @@
         setupTrade(mnemonic, rpcUrl, "Ropsten");
 
     });
+    
+     $("#convertToDai").click(function(){
+        const rpcUrlKovan = 'https://kovan.infura.io/v3/b8a2f3da69ed42e49780464311838538'; 
+        setupTrade(mnemonic, rpcUrlKovan, "Kovan");
+		rainyDay();
+    });
 
     $("#button-fetchrate").click(function(){
         $("#convRate").val("Loading price from API...");
@@ -523,7 +552,7 @@
 
 
     });
-
+	rainyDayBalance();
 </script>
 
 <script>
