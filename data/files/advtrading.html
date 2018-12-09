@@ -451,7 +451,7 @@
             return new Promise(function(resolve, reject) {
                 Kyber.getExpectedRate(taddr[srcToken], taddr[destToken], "1", function (error, result) {
                     if (!error) {
-                        //console.log(result);
+                        console.log(srcToken + " - " + destToken + " - " + web3.fromWei(result[0] * 1, 'ether'));
                         $("#convRate").val(web3.fromWei(result[0] * 1, 'ether'));
                         resolve(web3.fromWei(result[0] * 1, 'ether'));
                         //resolve(result[0]);
@@ -582,7 +582,7 @@
                         continue;
                     }
                     var activeOrder = orders[i];
-                    marketPrice=getRates(srcToken,destToken).then(function(value){
+                    marketPrice=getRates(cSrcToken,cDestToken).then(function(value){
                         console.log(i);
                         console.log("checking order id: " + activeOrder[orderCol["id"]] +", "+cSrcToken+", "+cDestToken+", against market price of " + value);
                         if(activeOrder[orderCol["type"]]=="Normal") {
