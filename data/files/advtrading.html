@@ -565,9 +565,9 @@
             console.log("running");
             var now, orderExpiryDate1;
 
-            for (var i = 0; i < orders.length; i++) {
+            for (let i = 0; i < orders.length; i++) {
                 if(orders[i][orderCol["status"]]=="Pending"){
-                    console.log("order " + i);
+                    console.log("order " + orders[orderCol["id"]]);
                     cSrcToken=orders[i][orderCol["srcToken"]];
                     cDestToken=orders[i][orderCol["destToken"]];
                     orderExpiryDate1 = new Date(orders[i][orderCol["expiry"]]).getTime();
@@ -581,42 +581,41 @@
                         console.log("Order expired.");
                         continue;
                     }
-                    var activeOrder = orders[i];
                     marketPrice=getRates(cSrcToken,cDestToken).then(function(value){
                         console.log(i);
-                        console.log("checking order id: " + activeOrder[orderCol["id"]] +", "+cSrcToken+", "+cDestToken+", against market price of " + value);
-                        if(activeOrder[orderCol["type"]]=="Normal") {
+                        console.log("checking order id: " + orders[i][orderCol["id"]] +", "+cSrcToken+", "+cDestToken+", against market price of " + value);
+                        if(orders[i][orderCol["type"]]=="Normal") {
                             console.log("This is a normal order");
-                            console.log("Sending order id: " + activeOrder[orderCol["id"]]);
-                            activeOrder[orderCol["destQty"]]=value*activeOrder[orderCol["srcQty"]];
-                            sendOrder(activeOrder[orderCol["srcToken"]],activeOrder[orderCol["destToken"]],value);
-                            activeOrder[orderCol["status"]]="Sent";
+                            console.log("Sending order id: " + orders[i][orderCol["id"]]);
+                            orders[i][orderCol["destQty"]]=value*orders[i][orderCol["srcQty"]];
+                            sendOrder(orders[i][orderCol["srcToken"]],orders[i][orderCol["destToken"]],value);
+                            orders[i][orderCol["status"]]="Sent";
                             $('#myTable').dataTable().fnClearTable();
                             $('#myTable').dataTable().fnAddData(orders);
-                        }else if(activeOrder[orderCol["type"]]=="Limit"){
+                        }else if(orders[i][orderCol["type"]]=="Limit"){
                             console.log("This is a limit order");
-                            console.log("Rate/market: " + activeOrder[orderCol["rate"]] + "/" + value);
-                            if(activeOrder[orderCol["rate"]]<=value){
-                                console.log("Sending order id: " + activeOrder[orderCol["id"]]);
-                                activeOrder[orderCol["destQty"]]=value*activeOrder[orderCol["srcQty"]];
-                                sendOrder(activeOrder[orderCol["srcToken"]],activeOrder[orderCol["destToken"]],value);
-                                activeOrder[orderCol["status"]]="Sent";
+                            console.log("Rate/market: " + orders[i][orderCol["rate"]] + "/" + value);
+                            if(orders[i][orderCol["rate"]]<=value){
+                                console.log("Sending order id: " + orders[i][orderCol["id"]]);
+                                orders[i][orderCol["destQty"]]=value*orders[i][orderCol["srcQty"]];
+                                sendOrder(orders[i][orderCol["srcToken"]],orders[i][orderCol["destToken"]],value);
+                                orders[i][orderCol["status"]]="Sent";
                                 $('#myTable').dataTable().fnClearTable();
                                 $('#myTable').dataTable().fnAddData(orders);
                             }
-                        }else if(activeOrder [orderCol["type"]]=="Stop"){
+                        }else if(orders[i] [orderCol["type"]]=="Stop"){
                             console.log("This is a stop order, ");
-                            console.log("Rate/market: " + activeOrder[orderCol["rate"]] + "/" + value);
-                            if(activeOrder[orderCol["rate"]]>=value){
-                                console.log("Sending order id: " + activeOrder[orderCol["id"]]);
-                                activeOrder[orderCol["destQty"]]=value*activeOrder[orderCol["srcQty"]];
-                                sendOrder(activeOrder[orderCol["srcToken"]],activeOrder[orderCol["destToken"]],value);
-                                activeOrder[orderCol["status"]]="Sent";
+                            console.log("Rate/market: " + orders[i][orderCol["rate"]] + "/" + value);
+                            if(orders[i][orderCol["rate"]]>=value){
+                                console.log("Sending order id: " + orders[i][orderCol["id"]]);
+                                orders[i][orderCol["destQty"]]=value*orders[i][orderCol["srcQty"]];
+                                sendOrder(orders[i][orderCol["srcToken"]],orders[i][orderCol["destToken"]],value);
+                                orders[i][orderCol["status"]]="Sent";
                                 $('#myTable').dataTable().fnClearTable();
                                 $('#myTable').dataTable().fnAddData(orders);
                             }
                         }
-//                        else if(activeOrder [orderCol["type"]]=="Trailing Stop"){
+//                        else if(orders[i] [orderCol["type"]]=="Trailing Stop"){
 //                            console.log("This is a trailing stop order");
 //                        }
                     });
