@@ -348,11 +348,13 @@
 
         $('input[name="expiryDateTime"]').daterangepicker({
             singleDatePicker: true,
+            timePicker24Hour: true,
             timePicker: true,
             showDropdowns: true,
             minDate: 0,
+            startDate: moment().add(1, 'day'),
             locale: {
-                format: 'MM/DD/YYYY hh:mm:ss'
+                format: 'MM/DD/YYYY HH:mm:ss'
             }
             //maxYear: parseInt(moment().format('YYYY'),10)
         }, function(start, end, label) {
@@ -361,7 +363,7 @@
         });
 
         $('input[name="expiryDateTime"]').on('apply.daterangepicker', function(ev, picker) {
-            $("#expiryDateTime").val(picker.startDate.format('MM/DD/YYYY hh:mm:ss'));
+            $("#expiryDateTime").val(picker.startDate.format('MM/DD/YYYY HH:mm:ss'));
         });
 
         var srcToken = $("#srcToken").find('option:selected').text();
@@ -431,11 +433,18 @@
                         {title: "Type"},
                         {title: "Rate"},
                         {title: "Expiry"},
-                        {title: "Status"}
+                        {title: "Status"},
+                        {title: "Action"}
                     ],
+                    columnDefs: [ {
+                        "targets": -1,
+                        "data": null,
+                        "defaultContent": '<button class="btn btn-outline-secondary btn-cancel" type="button" style="border:1px solid #800000;background-color:#800000;color:white;border-radius:0;">Cancel</button>'
+                    } ],
                     responsive: true
                 }
         );
+        refreshTable();
 
         Array.prototype.contains = function(obj) {
             var i = this.length;
@@ -474,15 +483,27 @@
 //            });
         });
 
-        $('#myTable tbody').on('click', 'tr', function () {
-            var data = table1.row( this ).data();
-            console.log(data[0]);
+//        $('#myTable tbody').on('click', 'tr', function () {
+//            var data = table1.row( this ).data();
+//            console.log(data[0]);
+//            if(orders[data[0]-1][orderCol["status"]]=="Pending"){
+//                orders[data[0]-1][orderCol["status"]]="Cancelled";
+//                $('#myTable').dataTable().fnClearTable();
+//                $('#myTable').dataTable().fnAddData(orders);
+//                console.log("Order cancelled.");
+//            }
+//        } );
+
+        $('#myTable tbody').on( 'click', 'button', function () {
+            var data = table1.row( $(this).parents('tr') ).data();
+            var cancelButton = $( 'button', table1.row( $(this).parents('tr') ).node(".btn.btn-outline-secondary.btn-cancel"));
+            console.log(table1.row( $(this).parents('tr') ).node());
             if(orders[data[0]-1][orderCol["status"]]=="Pending"){
                 orders[data[0]-1][orderCol["status"]]="Cancelled";
-                $('#myTable').dataTable().fnClearTable();
-                $('#myTable').dataTable().fnAddData(orders);
+                refreshTable();
                 console.log("Order cancelled.");
             }
+            cancelButton.attr("disabled","disabled");
         } );
 
         $("#addOrder").click(function () {
@@ -497,10 +518,9 @@
 
             if(srcQty>0 && destQty>0){
                 orders.push([orderId,srcToken,srcQty,destToken,destQty,orderType,rate,expiryDateTime,"Pending"])
-                $('#myTable').dataTable().fnClearTable();
-                $('#myTable').dataTable().fnAddData(orders);
+                refreshTable();
                 orderId++;
-                addAlert("Order queued successfully!","alert-success");
+                //addAlert("Order queued successfully!","alert-success");
             }else{
                 addAlert("Unable to queue order, please check order details!","alert-warning");
             }
@@ -546,6 +566,18 @@
             clearInterval(tid);
         }
 
+        function refreshTable(){
+            $('#myTable').dataTable().fnClearTable();
+            $('#myTable').dataTable().fnAddData(orders);
+            table1.rows().eq(0).each( function ( index ) {
+                if(table1.row(index).data()[orderCol["status"]]!="Pending"){
+                    var cancelButton = $( 'button', table1.row(index).node(".btn.btn-outline-secondary.btn-cancel"));
+                    cancelButton.attr("disabled","disabled");
+                }
+                //console.log(table1.row( $(this).parents('tr')).node());
+            } );
+        }
+
         function sendOrder(srcToken,destToken,srcQty){
             result = Kyber.getExpectedRate(taddr[srcToken], taddr["ETH"], "1", function (error, result) {
                 if(supportedTokens.contains(srcToken) && supportedTokens.contains(destToken)){
@@ -576,8 +608,7 @@
                     console.log( orderExpiryDate1 + " vs " + now);
                     if(orderExpiryDate1 < now){
                         orders[i][orderCol["status"]]="Expired";
-                        $('#myTable').dataTable().fnClearTable();
-                        $('#myTable').dataTable().fnAddData(orders);
+                        refreshTable();
                         console.log("Order expired.");
                         continue;
                     }
@@ -590,8 +621,7 @@
                             orders[i][orderCol["destQty"]]=value*orders[i][orderCol["srcQty"]];
                             sendOrder(orders[i][orderCol["srcToken"]],orders[i][orderCol["destToken"]],value);
                             orders[i][orderCol["status"]]="Sent";
-                            $('#myTable').dataTable().fnClearTable();
-                            $('#myTable').dataTable().fnAddData(orders);
+                            refreshTable();
                         }else if(orders[i][orderCol["type"]]=="Limit"){
                             console.log("This is a limit order");
                             console.log("Rate/market: " + orders[i][orderCol["rate"]] + "/" + value);
@@ -600,8 +630,7 @@
                                 orders[i][orderCol["destQty"]]=value*orders[i][orderCol["srcQty"]];
                                 sendOrder(orders[i][orderCol["srcToken"]],orders[i][orderCol["destToken"]],value);
                                 orders[i][orderCol["status"]]="Sent";
-                                $('#myTable').dataTable().fnClearTable();
-                                $('#myTable').dataTable().fnAddData(orders);
+                                refreshTable();
                             }
                         }else if(orders[i] [orderCol["type"]]=="Stop"){
                             console.log("This is a stop order, ");
@@ -611,8 +640,7 @@
                                 orders[i][orderCol["destQty"]]=value*orders[i][orderCol["srcQty"]];
                                 sendOrder(orders[i][orderCol["srcToken"]],orders[i][orderCol["destToken"]],value);
                                 orders[i][orderCol["status"]]="Sent";
-                                $('#myTable').dataTable().fnClearTable();
-                                $('#myTable').dataTable().fnAddData(orders);
+                                refreshTable();
                             }
                         }
 //                        else if(orders[i] [orderCol["type"]]=="Trailing Stop"){
